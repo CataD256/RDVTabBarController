@@ -57,11 +57,6 @@
     
     [self setTabBarHidden:self.isTabBarHidden animated:NO];
 }
--(void)viewDidLayoutSubviews{
-    [super viewDidLayoutSubviews];
-    [self setTabBarHidden:self.isTabBarHidden animated:NO];
-
-}
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return self.selectedViewController.preferredStatusBarStyle;
@@ -135,7 +130,7 @@
             [viewController removeFromParentViewController];
         }
     }
-
+    
     if (viewControllers && [viewControllers isKindOfClass:[NSArray class]]) {
         _viewControllers = [viewControllers copy];
         
@@ -171,7 +166,7 @@
         _tabBar = [[RDVTabBar alloc] init];
         [_tabBar setBackgroundColor:[UIColor clearColor]];
         [_tabBar setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|
-                                      UIViewAutoresizingFlexibleTopMargin|
+                                      //                                      UIViewAutoresizingFlexibleTopMargin|
                                       UIViewAutoresizingFlexibleLeftMargin|
                                       UIViewAutoresizingFlexibleRightMargin|
                                       UIViewAutoresizingFlexibleBottomMargin)];
@@ -197,28 +192,28 @@
     
     void (^block)() = ^{
         CGSize viewSize = weakSelf.view.bounds.size;
-        CGFloat tabBarStartingY = viewSize.height;
         CGFloat contentViewHeight = viewSize.height;
         CGFloat tabBarHeight = CGRectGetHeight([[weakSelf tabBar] frame]);
+        CGFloat tabBarStartingY = - tabBarHeight;
         
         if (!tabBarHeight) {
-            tabBarHeight = 49;
+            tabBarHeight = 44;
         }
         
-        if (!weakSelf.tabBarHidden) {
-            tabBarStartingY = viewSize.height - tabBarHeight;
+        if (!hidden) {
+            tabBarStartingY = 20;
             if (![[weakSelf tabBar] isTranslucent]) {
-                contentViewHeight -= ([[weakSelf tabBar] minimumContentHeight] ?: tabBarHeight);
+                contentViewHeight -= ([[weakSelf tabBar] minimumContentHeight] ?: tabBarHeight) + 20;
             }
             [[weakSelf tabBar] setHidden:NO];
         }
         
         [[weakSelf tabBar] setFrame:CGRectMake(0, tabBarStartingY, viewSize.width, tabBarHeight)];
-        [[weakSelf contentView] setFrame:CGRectMake(0, 0, viewSize.width, contentViewHeight)];
+        [[weakSelf contentView] setFrame:CGRectMake(0, CGRectGetMaxY([weakSelf tabBar].frame), viewSize.width, contentViewHeight)];
     };
     
     void (^completion)(BOOL) = ^(BOOL finished){
-        if (weakSelf.tabBarHidden) {
+        if (hidden) {
             [[weakSelf tabBar] setHidden:YES];
         }
     };
