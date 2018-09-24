@@ -197,13 +197,25 @@
         CGFloat tabBarStartingY = - tabBarHeight;
         
         if (!tabBarHeight) {
-            tabBarHeight = 44;
+            if (@available(ios 11.0, *)) {
+                CGFloat safeAreaTop = UIApplication.sharedApplication.keyWindow.safeAreaInsets.top;
+                tabBarHeight = 44 + safeAreaTop;
+            } else {
+                tabBarHeight = 44;
+            }
+        } else if (@available(ios 11.0, *)) {
+            CGFloat safeAreaTop = UIApplication.sharedApplication.keyWindow.safeAreaInsets.top;
+            tabBarHeight = 44 + safeAreaTop;
         }
         
         if (!hidden) {
-            tabBarStartingY = 20;
+            if (@available(ios 11.0, *)) {
+                tabBarStartingY = 0;
+            } else {
+                tabBarStartingY = 20;
+            }
             if (![[weakSelf tabBar] isTranslucent]) {
-                contentViewHeight -= ([[weakSelf tabBar] minimumContentHeight] ?: tabBarHeight) + 20;
+                contentViewHeight -= ([[weakSelf tabBar] minimumContentHeight] ?: tabBarHeight) + tabBarStartingY;
             }
             [[weakSelf tabBar] setHidden:NO];
         }
