@@ -78,11 +78,7 @@
         CGFloat itemHeight = [item itemHeight];
         
         if (!itemHeight) {
-            itemHeight = frameSize.height;
-            if (@available(ios 11.0, *)) {
-                CGFloat safeAreaTop = UIApplication.sharedApplication.keyWindow.safeAreaInsets.top;
-                itemHeight -= safeAreaTop;
-            }
+            itemHeight = 44;
         }
         
         [item setFrame:CGRectMake(self.contentEdgeInsets.left + (index * self.itemWidth),
